@@ -1,9 +1,7 @@
-package java;
+package BinarySearchTreeOnADT;
+
 
 import java.util.HashSet;
-
-
-
 
 public interface DynamicSetADT {
 
