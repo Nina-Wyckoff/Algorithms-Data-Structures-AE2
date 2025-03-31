@@ -64,23 +64,96 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
         }
     }
 
+
+    private int size(Node x){
+        if (x == null){
+            return 0;
+        }
+        return x.size;
+    }
+
     //remove element x from S, if it is presen
     public void remove(HashSet<Node> setS, Node elementX){
         //probably search first
-        //i have to remove it without cutting off the children
-        //i link elementX's children to elementX's parent
-        //i remove elementX from the hashset
+        try {
+            search(setS,elementX);
+           
+            if(elementX.leftNode == null && elementX.rightNode == null){
+                
+                elementX.p.size -= 1;
+                linkParentToChild(elementX, null);
+                setS.remove(elementX);
+    
+            } else if(elementX.leftNode != null && elementX.rightNode != null){
+                    
+                        //find smallest node in x's righ subtree
+                        Node successor = revealSuccessor(elementX);
+                        if (successor != null){
+                            elementX.key = successor.key;
+                            remove(setS, successor);
+                        }
+            } else{
+                elementX.p.size -=1;
+                Node child = (elementX.leftNode != null) ? elementX.leftNode : elementX.rightNode;
+
+                linkParentToChild(elementX, child);
+                setS.remove(elementX);
+                }
+            
+
+        } catch (Exception e) {
+            System.out.println("Node not found");
+        }
+    }
+
+    private Node revealSuccessor(Node elementX){
+        if (elementX.rightNode == null){
+            return null;
+        } 
+        Node successorNode = elementX.rightNode;
+        while (successorNode.leftNode != null){
+            successorNode = successorNode.leftNode;
+        }
+        return successorNode;
+        
+    }
+
+    private void linkParentToChild(Node elementX, Node childNode){
+        if (elementX.p != null){
+            if(elementX.p.leftNode.equals(elementX)){
+                elementX.p.leftNode = childNode;
+            } else{
+                elementX.p.rightNode = childNode;
+            }
+        } else {
+            root = childNode;
+        }
+        if (childNode != null) {
+            childNode.p = elementX.p;
+        }
     }
 
     //check whether element x is in set S
     
     public boolean isElement(HashSet<Node> setS, Node elementX){
-        //if search returns null/the excetion, return false
-        //return true
+        try {
+            if (search(setS, elementX) == null){
+                return false;
+            }
+            return true;  
+        } catch (Exception e) {
+            return false;
+        }
+
+
     }
 
     //check whether set S has no elements
     public boolean isEmpty(HashSet<Node> setS){
+        if (size(root) == 0){
+            return true;
+        }
+        return false;
         //get size of set
         //note: does a null root count? 
         //because if so then it would still be empty 
@@ -89,8 +162,8 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
 
     //return the number of elements of set S
     public int setSize(HashSet<Node> setS){
-        //ummmmm modified search, i do a counter instead of storing nodes
-        //can i use size method? is that the much simpler answer?
+        return size(root);
+
     }
 
     // return the union of sets S and T
@@ -98,6 +171,10 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
         //hmmmm if this union also has to be in tree structure
         //that is a complicating factor
         //how can i make this dry?
+
+        HashSet<Node> resultsSet = new HashSet<>();
+
+        for (Node node :)
     }
 
     //return the intersection of sets S and T
@@ -115,8 +192,19 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
         
     }
 
-    private Node search(HashSet<Node> setS,Node node) throws NoSuchElementException{
+    public Node search(HashSet<Node> setS,Node node) throws NoSuchElementException{
+        Node thisNode = root;
 
+        while (thisNode != null){
+            if (node.key == thisNode.key) {
+                return thisNode;
+            } else if(node.key < thisNode.key){
+                thisNode = thisNode.leftNode;
+            } else{
+                thisNode = thisNode.rightNode;
+            }
+        }
+        throw new NoSuchElementException("Node with key " + node.key + " not found");
     }
 
     }
