@@ -45,10 +45,13 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
             if (elementX.key < elementZ.key){
                 elementZ = elementZ.leftNode;
             }
-            else{
+            else if (elementX.key > elementZ.key){
                 elementZ = elementZ.rightNode;
+            } else {
+                return;
             }
         }
+
         elementX.p = elementY;
         elementX.size = 1;
         if (elementY == null){
@@ -59,10 +62,12 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
                 elementY.leftNode = elementX;
             }
             else{
-                elementY.rightNode = elementZ;
+                elementY.rightNode = elementX;
             }
         }
     }
+
+
 
 
     private int size(Node x){
@@ -154,10 +159,7 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
             return true;
         }
         return false;
-        //get size of set
-        //note: does a null root count? 
-        //because if so then it would still be empty 
-        //but the size method wouldn't reflect that
+
     }
 
     //return the number of elements of set S
@@ -168,28 +170,60 @@ public class BinSearchTreeDynSet implements DynamicSetADT<BinarySearchTreeOnADT.
 
     // return the union of sets S and T
     public HashSet<Node> union(HashSet<Node> setS, HashSet<Node> setT){
-        //hmmmm if this union also has to be in tree structure
-        //that is a complicating factor
-        //how can i make this dry?
-
         HashSet<Node> resultsSet = new HashSet<>();
 
-        for (Node node :)
+        for (Node node : setS) {
+            resultsSet.add(node);         
+        }
+        for (Node node : setT) {
+            resultsSet.add(node);         
+        }
+        return resultsSet;
     }
+
 
     //return the intersection of sets S and T
     public HashSet<Node> intersection(HashSet<Node> setS, HashSet<Node> setT){
-        
+        HashSet<Node> resultsSet = new HashSet<>();
+
+        for (Node node : setS) {
+            if (setT.contains(node)){
+                resultsSet.add(node);
+            }
+        }
+        return resultsSet;
     }
 
     //returns the difference of sets S and T
     public HashSet<Node> differences(HashSet<Node> setS, HashSet<Node> setT){
-        
+        HashSet<Node> resultsSet = new HashSet<>();
+
+        for (Node node : setS) {
+            if (setT.contains(node) == false){
+                resultsSet.add(node);
+            }
+        }
+
+        for (Node node : setT) {
+            if (setS.contains(node) == false){
+                resultsSet.add(node);
+            }
+        }
+
+        return resultsSet;
     }
 
     //check whether set S is a subset of set T
     public boolean subset(HashSet<Node> setS, HashSet<Node> setT){
-        
+        boolean subsetFlag = true;
+
+        for (Node node : setS) {
+            if(setT.contains(node) == false){
+                subsetFlag = false;
+            }
+        }
+
+        return subsetFlag;
     }
 
     public Node search(HashSet<Node> setS,Node node) throws NoSuchElementException{
